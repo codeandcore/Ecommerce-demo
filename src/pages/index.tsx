@@ -10,7 +10,9 @@ import React from 'react';
 
 export const getStaticProps = async () => {
   const response = await getFeaturedProducts();
-  const cartdata= await getCart()
+  const cartdata = await getCart()
+  console.log("cartdata",cartdata);
+  
   const nonce = cartdata?.headers['nonce'];
   return {
     props: {

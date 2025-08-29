@@ -4,6 +4,21 @@ const nextConfig = {
   images: {
     domains: ['res.cloudinary.com','lightslategrey-mink-262348.hostingersite.com'],
   },
+    async rewrites() {
+    return {
+      fallback: [
+        {
+          source: "/api/cart",
+          destination:
+            "https://lightslategrey-mink-262348.hostingersite.com/wp-json/wc/store/v1/cart",
+        },
+        {
+          source: "/:path*",
+          destination: `${process.env.NEXT_PUBLIC_BE_URL}/:path*`,
+        },
+      ],
+    };
+  },
 };
 
 module.exports = nextConfig;

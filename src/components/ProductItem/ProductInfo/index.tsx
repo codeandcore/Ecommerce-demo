@@ -21,7 +21,7 @@ const ProductInfo = ({ product }: any) => {
   const [hearted, setHearted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(false);
-
+  // Sync hearted state with wishlist
   useEffect(() => {
     setHearted(wishlist.some((item) => item.id === product.id));
   }, [wishlist, product.id]);
@@ -45,7 +45,8 @@ const ProductInfo = ({ product }: any) => {
     }
 
     addToCart(product, selectedAttributes);
-    const data = await AddToCartProduct(product?.id);
+
+    const data = await AddToCartProduct(product?.id)
     setAddedToCart(true);
   };
 

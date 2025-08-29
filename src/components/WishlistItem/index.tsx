@@ -18,7 +18,7 @@ const WishlistItem = ({ item }: any) => {
   const [selectedAttributes, setSelectedAttributes] = useState({}) as any;
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(false);
-
+    const nonce = localStorage.getItem('api_nonce'); 
   const addToCart = useCartStore((state) => state.addToCart);
   const removeFromWishlist = useWishlistStore((state) => state.removeFromWishList);
 
@@ -40,7 +40,7 @@ const WishlistItem = ({ item }: any) => {
     }
 
     addToCart(item, selectedAttributes);
-        const data = await AddToCartProduct(item?.id)
+        const data = await AddToCartProduct(item?.id,nonce)
     setAddedToCart(true);
   };
 

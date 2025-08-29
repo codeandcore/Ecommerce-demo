@@ -1,3 +1,5 @@
+import { getCart } from '@/api/products/getCartApi';
+import { customAxios } from '@/lib/axios';
 import { Product } from '@/types';
 import { useEffect, useState } from 'react';
 import { create } from 'zustand';
@@ -21,7 +23,17 @@ export const useCartStore = create<Cart>()(
   persist(
     (set) => ({
       cart: [],
-      
+      fetchCart: async () => {
+        try {
+          const { data } = await getCart();
+          console.log("data",data);
+          
+          // Adjust API endpoint
+          set({ cart: data?.items || [] }); // Assuming API returns { items: CartItem[] }
+        } catch (error) {
+          console.error('Failed to fetch cart:', error);
+        }
+      },
       addToCart: (newItem, size) =>
         set((state) => {
           console.log("state",state);
@@ -162,4 +174,11 @@ export const useTotalPrice = () => {
   }, [cart]);
 
   return { totalPrice, isHydrated };
+};
+
+export const useCartInitializer = () => {
+  const fetchCart = useCartStore((state) => state.fetchCart);
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 };

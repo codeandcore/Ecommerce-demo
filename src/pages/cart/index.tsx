@@ -15,9 +15,10 @@ import Head from 'next/head';
 import React from 'react';
 import CartItem from '@/components/CartItem';
 import OrderSummary from '@/components/OrderSummary';
-import { useCart } from '@/stores/cart';
+import { useCart, useCartInitializer } from '@/stores/cart';
 
 const Cart = () => {
+  useCartInitializer();
   const { cart, isHydrated } = useCart();
 
   if (!isHydrated) {
