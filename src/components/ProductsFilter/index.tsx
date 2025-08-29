@@ -124,15 +124,17 @@ const ProductsFilter = ({
         </div>
         {openDropdown && (
           <div style={styles.dropdownMenu}>
-            {categories.map((cat, idx) => (
+            {categories.map((cat: any, idx: any) => (
               <label key={idx} style={styles.option}>
-                <input
-                  type="checkbox"
-                  checked={selectedCategories.includes(cat)}
-                  onChange={() => toggleCategory(cat)}
-                  style={{ marginRight: "6px" }}
-                />
-                {cat}
+                <>
+                  <input
+                    type="checkbox"
+                    checked={selectedCategories.includes(cat)}
+                    onChange={() => toggleCategory(cat)}
+                    style={{ marginRight: "6px" }}
+                  />
+                  {cat}
+                </>
               </label>
             ))}
           </div>
