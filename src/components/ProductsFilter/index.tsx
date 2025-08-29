@@ -83,7 +83,6 @@ const ProductsFilter = ({
 
   const hasFilters = selectedCategories.length > 0 || selectedPriceRange;
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (

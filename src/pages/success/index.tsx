@@ -6,7 +6,7 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useCartStore } from '@/stores/cart';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+export const getServerSideProps: GetServerSideProps = async (context: any) => {
   const sessionId = context.query.session_id;
 
   if (typeof sessionId === 'string') {
@@ -49,12 +49,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 export default function Success() {
   const router = useRouter();
-  const resetCart = useCartStore((state) => state.resetCart);
+  const resetCart = useCartStore((state: any) => state.resetCart);
 
   useEffect(() => {
     router.replace('/success', undefined, { shallow: true });
     resetCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

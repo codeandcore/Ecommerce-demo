@@ -15,22 +15,22 @@ export const useWishlistStore = create<Wishlist>()(
     (set) => ({
       wishlist: [],
 
-      removeFromWishList: (id) =>
+      removeFromWishList: (id: any) =>
         set((state) => {
           return {
-            wishlist: state.wishlist.filter((item) => item.id !== id),
+            wishlist: state.wishlist.filter((item: any) => item.id !== id),
           };
         }),
 
-      toggleWishlist: (newItem) =>
-        set((state) => {
+      toggleWishlist: (newItem:any ) =>
+        set((state:any ) => {
           const itemExists = state.wishlist.find(
-            (item) => item.id === newItem.id
+            (item: any) => item.id === newItem.id
           );
 
           if (itemExists) {
             return {
-              wishlist: state.wishlist.filter((item) => item.id !== newItem.id),
+              wishlist: state.wishlist.filter((item: any) => item.id !== newItem.id),
             };
           }
 
@@ -41,12 +41,8 @@ export const useWishlistStore = create<Wishlist>()(
   )
 );
 
-/*
-Workaround to integrate zustand persist with NextJS SSR
-https://github.com/pmndrs/zustand/issues/1145
-*/
 export const useWishlist = () => {
-  const initialWishlist = useWishlistStore((state) => state.wishlist);
+  const initialWishlist = useWishlistStore((state: any) => state.wishlist);
   const [wishlist, setWishlist] = useState<Product[]>([]);
   const [isHydrated, setIsHydrated] = useState(false);
 

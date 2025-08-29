@@ -25,11 +25,11 @@ export const useCartStore = create<Cart>()(
       cart: [],
       fetchCart: async () => {
         try {
-            const response = await getCart(); // This should return full Axios response
+          const response = await getCart(); // This should return full Axios response
           const { data, headers } = response;
-          const nonce = headers['nonce'];
+          const nonce = headers["nonce"];
           if (nonce) {
-            localStorage.setItem('api_nonce', nonce);
+            localStorage.setItem("api_nonce", nonce);
           }
           // Adjust API endpoint
           set({ cart: data?.items || [] }); // Assuming API returns { items: CartItem[] }
@@ -42,7 +42,7 @@ export const useCartStore = create<Cart>()(
           console.log("state", state);
 
           const cartIndex = state.cart.findIndex(
-            (item) => item.id === newItem.id && item.size === size
+            (item: any) => item.id === newItem.id && item.size === size
           );
 
           if (cartIndex < 0) {
@@ -51,7 +51,7 @@ export const useCartStore = create<Cart>()(
             };
           }
 
-          const newCart = state.cart.map((item, index) => {
+          const newCart = state.cart.map((item: any, index: any) => {
             if (index === cartIndex) {
               return { ...item, quantity: item.quantity + 1 };
             }
@@ -65,7 +65,7 @@ export const useCartStore = create<Cart>()(
 
       increment: (id, size) =>
         set((state) => {
-          const newCart = state.cart.map((item:any) => {
+          const newCart = state.cart.map((item: any) => {
             if (item.id === id && item.size === size) {
               return { ...item, quantity: item.quantity + 1 };
             }
@@ -80,11 +80,11 @@ export const useCartStore = create<Cart>()(
       decrement: (id, size) =>
         set((state) => {
           const cartItem = state.cart.find(
-            (item) => item.id === id && item.size === size
+            (item: any) => item.id === id && item.size === size
           );
 
           if (cartItem?.quantity && cartItem?.quantity > 1) {
-            const newCart = state.cart.map((item:any) => {
+            const newCart = state.cart.map((item: any) => {
               if (item.id === id && item.size === size) {
                 return {
                   ...item,
@@ -100,7 +100,7 @@ export const useCartStore = create<Cart>()(
             };
           }
 
-          const filteredCart = state.cart.filter((item) => {
+          const filteredCart = state.cart.filter((item: any) => {
             if (item.id === id && item.size === size) {
               return false;
             }
@@ -114,7 +114,7 @@ export const useCartStore = create<Cart>()(
       removeFromCart: (id, size) =>
         set((state) => {
           return {
-            cart: state.cart.filter((item) => {
+            cart: state.cart.filter((item: any) => {
               if (item.id === id && item.size === size) {
                 return false;
               }
@@ -157,7 +157,9 @@ export const useTotalQuantity = () => {
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
-    setTotalQuantity(cart.reduce((prev, cur) => prev + cur.quantity, 0));
+    setTotalQuantity(
+      cart.reduce((prev: any, cur: any) => prev + cur.quantity, 0)
+    );
     setIsHydrated(true);
   }, [cart]);
 
@@ -172,7 +174,7 @@ export const useTotalPrice = () => {
   useEffect(() => {
     setTotalPrice(
       cart?.reduce(
-        (prev, cur) => prev + cur?.quantity * cur?.prices?.price,
+        (prev: any, cur: any) => prev + cur?.quantity * cur?.prices?.price,
         0
       )
     );
