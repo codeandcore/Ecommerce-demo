@@ -6,46 +6,46 @@ import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import { useCartStore } from '@/stores/cart';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-  const sessionId = context.query.session_id;
+// export const getServerSideProps: GetServerSideProps = async (context) => {
+//   const sessionId = context.query.session_id;
 
-  if (typeof sessionId === 'string') {
-    try {
-      const session = await stripe.checkout.sessions.retrieve(sessionId);
-      const currentTime = Math.floor(Date.now() / 1000);
+//   if (typeof sessionId === 'string') {
+//     try {
+//       const session = await stripe.checkout.sessions.retrieve(sessionId);
+//       const currentTime = Math.floor(Date.now() / 1000);
 
-      const isPaymentSuccessful =
-        session.payment_status === 'paid' && session.expires_at > currentTime;
+//       const isPaymentSuccessful =
+//         session.payment_status === 'paid' && session.expires_at > currentTime;
 
-      if (isPaymentSuccessful) {
-        return {
-          props: {},
-        };
-      }
+//       if (isPaymentSuccessful) {
+//         return {
+//           props: {},
+//         };
+//       }
 
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    } catch (err) {
-      return {
-        redirect: {
-          destination: '/',
-          permanent: false,
-        },
-      };
-    }
-  }
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: false,
+//         },
+//       };
+//     } catch (err) {
+//       return {
+//         redirect: {
+//           destination: '/',
+//           permanent: false,
+//         },
+//       };
+//     }
+//   }
 
-  return {
-    redirect: {
-      destination: '/',
-      permanent: false,
-    },
-  };
-};
+//   return {
+//     redirect: {
+//       destination: '/',
+//       permanent: false,
+//     },
+//   };
+// };
 
 export default function Success() {
   const router = useRouter();
