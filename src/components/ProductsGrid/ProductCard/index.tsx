@@ -45,15 +45,11 @@ const ProductCard = ({
         >
           <div className={styles.wrapper}>
             <Image
-              src={product.images?.[0]?.src}
-              alt={product.images?.[0]?.alt}
+              src={product?.images?.[0]?.src}
+              alt={product?.images?.[0]?.alt}
               fill
               style={{ objectFit: 'cover', objectPosition: '50% 10%' }}
               sizes={sizes}
-              // placeholder="blur"
-              // blurDataURL={
-              //   product.attributes.image1.data.attributes.placeholder
-              // }
               className={styles.primary}
             />
           </div>

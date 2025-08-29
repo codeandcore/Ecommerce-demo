@@ -1,99 +1,125 @@
-import {
-  Accordion,
-  Button,
-  Divider,
-  Group,
-  MediaQuery,
-  ScrollArea,
-  Text,
-} from '@mantine/core';
-import React from 'react';
-import BrandFilter from './BrandFilter';
-import NewArrivalsFilter from './NewArrivalsFilter';
-import PriceFilter from './PriceFilter';
-import SizeFilter from './SizeFilter';
-import Sort from './Sort';
-import TypeFilter from './TypeFilter';
-
-type ProductsFilterProps = {
-  filter: {
-    types: string[];
-    price: {
-      minPrice: number | '';
-      maxPrice: number | '';
-    };
-    isNew: boolean;
-    sizes: string[];
-    brands: string[];
-  };
-  setFilter: {
-    setTypes: React.Dispatch<React.SetStateAction<string[]>>;
-    setMinPrice: React.Dispatch<React.SetStateAction<number | ''>>;
-    setMaxPrice: React.Dispatch<React.SetStateAction<number | ''>>;
-    setIsNew: React.Dispatch<React.SetStateAction<boolean>>;
-    setSizes: React.Dispatch<React.SetStateAction<string[]>>;
-    setBrands: React.Dispatch<React.SetStateAction<string[]>>;
-  };
-  resetFilter: () => void;
-  sortBy: string | null;
-  setSortBy: React.Dispatch<React.SetStateAction<string | null>>;
-  height: string | number;
-  category: string;
-  id: number;
-};
+import React, { useState, useMemo, useEffect } from "react";
 
 const ProductsFilter = ({
-  filter,
-  setFilter,
+  productsData,
+  setProductsData,
   resetFilter,
-  sortBy,
-  setSortBy,
-  height,
-  category,
-  id,
-}: ProductsFilterProps) => {
-  const { types, price, isNew, sizes, brands } = filter;
-  const { setTypes, setMinPrice, setMaxPrice, setIsNew, setSizes, setBrands } =
-    setFilter;
+}: {
+  productsData: any;
+  setProductsData: any;
+  resetFilter: () => void;
+}) => {
+  const [allProducts] = useState(productsData);
+  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedPriceRange, setSelectedPriceRange] = useState<string>("");
+
+  // 🔹 Extract categories
+  const categories = useMemo(() => {
+    const allCats = allProducts.flatMap((p: any) =>
+      p.categories.map((c: any) => c.name)
+    );
+    return Array.from(new Set(allCats));
+  }, [allProducts]);
+
+  // 🔹 Min & Max price
+  const minPrice = useMemo(
+    () => Math.min(...allProducts.map((p: any) => Number(p.prices.price))),
+    [allProducts]
+  );
+  const maxPrice = useMemo(
+    () => Math.max(...allProducts.map((p: any) => Number(p.prices.price))),
+    [allProducts]
+  );
+
+  // 🔹 Define some fixed ranges (you can adjust step size)
+  const priceRanges = useMemo(() => {
+    const step = Math.ceil((maxPrice - minPrice) / 4); // 4 buckets
+    const ranges: { label: string; min: number; max: number }[] = [];
+    let start = minPrice;
+    while (start < maxPrice) {
+      const end = Math.min(start + step, maxPrice);
+      ranges.push({
+        label: `₹${start} - ₹${end}`,
+        min: start,
+        max: end,
+      });
+      start = end + 1;
+    }
+    return ranges;
+  }, [minPrice, maxPrice]);
+
+  // 🔹 Filtering logic
+  useEffect(() => {
+    let filtered = [...allProducts];
+
+    if (selectedCategory) {
+      filtered = filtered.filter((p: any) =>
+        p.categories.some((c: any) => c.name === selectedCategory)
+      );
+    }
+
+    if (selectedPriceRange) {
+      const [min, max] = selectedPriceRange.split("-").map(Number);
+      filtered = filtered.filter(
+        (p) => Number(p.prices.price) >= min && Number(p.prices.price) <= max
+      );
+    }
+
+    setProductsData(filtered);
+  }, [selectedCategory, selectedPriceRange, allProducts, setProductsData]);
+
+  // 🔹 Reset filters handler
+  const handleReset = () => {
+    setSelectedCategory("");
+    setSelectedPriceRange("");
+    setProductsData(allProducts);
+    resetFilter();
+  };
 
   return (
-    <>
-      <MediaQuery smallerThan="xs" styles={{ display: 'none' }}>
-        <Group position="apart" pl={20}>
-          <Text weight={600} size={18}>
-            Filter
-          </Text>
-          <Button
-            variant="subtle"
-            color="gray.7"
-            onClick={resetFilter}
-            styles={{
-              label: {
-                textDecoration: 'underline',
-              },
-            }}
-          >
-            Clear all
-          </Button>
-        </Group>
-      </MediaQuery>
-      <Divider color="gray.3" />
-      <ScrollArea h={height} type="auto" scrollbarSize={10}>
-        <Accordion multiple={true} variant="default">
-          <Sort sortBy={sortBy} setSortBy={setSortBy} id={id} />
-          <TypeFilter types={types} setTypes={setTypes} category={category} />
-          <PriceFilter
-            minPrice={price.minPrice}
-            setMinPrice={setMinPrice}
-            maxPrice={price.maxPrice}
-            setMaxPrice={setMaxPrice}
-          />
-          <NewArrivalsFilter isNew={isNew} setIsNew={setIsNew} />
-          <SizeFilter sizes={sizes} setSizes={setSizes} />
-          <BrandFilter brands={brands} setBrands={setBrands} />
-        </Accordion>
-      </ScrollArea>
-    </>
+    <div style={{ padding: "1rem", border: "1px solid #ddd" }}>
+      <h3>Filters</h3>
+
+      {/* Category Filter */}
+      <div style={{ marginBottom: "1rem" }}>
+        <label>Category: </label>
+        <select
+          value={selectedCategory}
+          onChange={(e) => setSelectedCategory(e.target.value)}
+        >
+          <option value="">All</option>
+          {categories.map((cat: any, idx: number) => (
+            <option key={idx} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Price Filter (Radio buttons) */}
+      <div style={{ marginBottom: "1rem" }}>
+        <label>Price Range:</label>
+        <div>
+          {priceRanges.map((range, idx) => (
+            <label key={idx} style={{ display: "block" }}>
+              <input
+                type="radio"
+                name="priceRange"
+                value={`${range.min}-${range.max}`}
+                checked={selectedPriceRange === `${range.min}-${range.max}`}
+                onChange={(e) => setSelectedPriceRange(e.target.value)}
+              />
+              {range.label}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Reset Button */}
+      <button onClick={handleReset} style={{ marginTop: "0.5rem" }}>
+        Remove Filters
+      </button>
+    </div>
   );
 };
 
