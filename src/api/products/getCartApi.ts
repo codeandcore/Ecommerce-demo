@@ -1,9 +1,7 @@
-import { customAxios } from '@/lib/axios';
-import { Product, StrapiResponse } from '@/types';
-import axios from 'axios';
+import { customAxiosCS } from '@/lib/axios';
 
 export const getCart = async () => {
-  const data= await axios.get(
+  const data= await customAxiosCS.get(
     '/api/cart'
   );
   
