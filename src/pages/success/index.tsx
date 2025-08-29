@@ -49,12 +49,11 @@ import { useCartStore } from '@/stores/cart';
 
 export default function Success() {
   const router = useRouter();
-  const resetCart = useCartStore((state) => state.resetCart);
+  const resetCart = useCartStore((state: any) => state.resetCart);
 
   useEffect(() => {
     router.replace('/success', undefined, { shallow: true });
     resetCart();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
