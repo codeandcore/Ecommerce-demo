@@ -1,32 +1,41 @@
-import { InferGetStaticPropsType } from 'next';
-import { getFeaturedProducts } from '@/api/products/getFeaturedProducts';
-import Brands from '@/components/Brands';
-import FeaturedProducts from '@/components/FeaturedProducts';
-import Hero from '@/components/Hero';
-// import NewArrivals from '@/components/NewArrivals';
-import Newsletter from '@/components/Newsletter';
-import { getCart } from '@/api/products/getCartApi';
-import React from 'react';
+"use client";
 
-export const getStaticProps = async () => {
-  const response = await getFeaturedProducts();
+import React, { useEffect, useState } from "react";
+import { getFeaturedProducts } from "@/api/products/getFeaturedProducts";
+import Brands from "@/components/Brands";
+import FeaturedProducts from "@/components/FeaturedProducts";
+import Hero from "@/components/Hero";
 
-  return {
-    props: {
-      products: response ? response.slice(0, 4) : [],
-    },
-  };
-};
+const Home: React.FC = () => {
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-export default function Home({
-  products,
-}: InferGetStaticPropsType<typeof getStaticProps>) {
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await getFeaturedProducts();
+        setProducts(response ? response.slice(0, 4) : []);
+      } catch (err) {
+        console.error("Failed to fetch featured products:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <>
       <Hero />
-      <FeaturedProducts products={products} />
+      {loading ? (
+        <p>Loading featured products...</p>
+      ) : (
+        <FeaturedProducts products={products} />
+      )}
       <Brands />
     </>
   );
-}
+};
+
+export default Home;

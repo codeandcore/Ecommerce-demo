@@ -6,7 +6,7 @@ export const updateCartItem = async (key: string, quantity: number) => {
   formData.append('quantity', quantity.toString());
 
   const { data } = await customAxiosCS.post(
-    '/api/cart/update-item',
+    '/cart/update-item',
     formData,
     {
       headers: {

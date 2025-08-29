@@ -1,66 +1,55 @@
-import { Container, MediaQuery, rem, SimpleGrid, Title } from '@mantine/core';
-import { GetStaticPaths, GetStaticProps, InferGetStaticPropsType } from 'next';
-import Head from 'next/head';
-import { ParsedUrlQuery } from 'querystring';
-import React from 'react';
-import { getAllProducts } from '@/api/products/getAllProducts';
-import { getProductById } from '@/api/products/getProductById';
-import ProductItem from '@/components/ProductItem';
-import ProductCard from '@/components/ProductsGrid/ProductCard';
-import { Carousel } from '@mantine/carousel';
+"use client";
 
-interface Params extends ParsedUrlQuery {
-  productId: string;
-}
+import { Container, MediaQuery, rem, SimpleGrid, Title } from "@mantine/core";
+import { Carousel } from "@mantine/carousel";
+import Head from "next/head";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import { getProductById } from "@/api/products/getProductById";
+import { getAllProducts } from "@/api/products/getAllProducts";
+import ProductItem from "@/components/ProductItem";
+import ProductCard from "@/components/ProductsGrid/ProductCard";
 
-type Props = {
-  product: any
-  recommendedProducts: any
-};
-console.log(
-  
-);
+const ProductPage: React.FC = () => {
+  const router = useRouter();
+  const { productId } = router.query;
 
-export const getStaticPaths: GetStaticPaths<Params> = async () => {
-  const response = await getAllProducts();
+  const [product, setProduct] = useState<any>(null);
+  const [recommendedProducts, setRecommendedProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  return {
-    paths: response.map((product:any) => {
-      return {
-        params: {
-          productId: product.id.toString(),
-        },
-      };
-    }),
-    fallback: false,
-  };
-};
+  useEffect(() => {
+    if (!productId) return;
 
-export const getStaticProps: GetStaticProps<Props, Params> = async ({
-  params,
-}) => {
-  if (params?.productId) {
-    const response = await getProductById(params.productId);
-    return {
-      props: {
-        product: response,
-        key: response.id,
-      },
+    const fetchData = async () => {
+      try {
+        const prod = await getProductById(productId as string);
+        setProduct(prod);
+
+        // Optionally fetch recommended products
+        const allProducts = await getAllProducts();
+        const recommended = allProducts
+          .filter((p: any) => p.id !== prod.id)
+          .slice(0, 6);
+        setRecommendedProducts(recommended);
+      } catch (err) {
+        console.error("Failed to fetch product data:", err);
+      } finally {
+        setLoading(false);
+      }
     };
+
+    fetchData();
+  }, [productId]);
+
+  if (loading) {
+    return (
+      <Container size={1200} px={16} py={50}>
+        <p>Loading product...</p>
+      </Container>
+    );
   }
 
-  return {
-    props: {
-      product: null,
-      recommendedProducts: null,
-    },
-  };
-};
-
-const Product = ({
-  product,
-  recommendedProducts,
-}: InferGetStaticPropsType<typeof getStaticProps>) => {
   return (
     <>
       {product && (
@@ -68,18 +57,22 @@ const Product = ({
           <title>{`${product.attributes.title} | ISRAELPHARMA`}</title>
         </Head>
       )}
+
       <MediaQuery
         largerThan={768}
         styles={{ paddingLeft: rem(32), paddingRight: rem(32) }}
       >
         <Container size={1200} px={16} py={50}>
           {product && <ProductItem product={product} />}
-          {recommendedProducts && (
+
+          {recommendedProducts.length > 0 && (
             <>
               <Title order={3} size={18} weight={600} mt={30} mb={10}>
                 You May Also Like
               </Title>
-              <MediaQuery smallerThan={768} styles={{ display: 'none' }}>
+
+              {/* Desktop grid */}
+              <MediaQuery smallerThan={768} styles={{ display: "none" }}>
                 <SimpleGrid
                   cols={3}
                   spacing={20}
@@ -90,34 +83,34 @@ const Product = ({
                     { minWidth: 1200, cols: 3, spacing: 50 },
                   ]}
                 >
-                  {recommendedProducts.map((product:any) => {
-                    return (
-                      <div key={product.id}>
-                        <ProductCard
-                          product={product}
-                          withHeart={false}
-                          sizes="(min-width: 1200px) 346px, 33vw"
-                        />
-                      </div>
-                    );
-                  })}
+                  {recommendedProducts.map((prod: any) => (
+                    <div key={prod.id}>
+                      <ProductCard
+                        product={prod}
+                        withHeart={false}
+                        sizes="(min-width: 1200px) 346px, 33vw"
+                      />
+                    </div>
+                  ))}
                 </SimpleGrid>
               </MediaQuery>
-              <MediaQuery largerThan={768} styles={{ display: 'none' }}>
+
+              {/* Mobile carousel */}
+              <MediaQuery largerThan={768} styles={{ display: "none" }}>
                 <Carousel
                   slideSize="80%"
                   slideGap="md"
                   withControls={false}
                   loop
                   breakpoints={[
-                    { minWidth: 500, slideSize: '65%', slideGap: 'md' },
-                    { minWidth: 600, slideSize: '50%', slideGap: 'md' },
+                    { minWidth: 500, slideSize: "65%", slideGap: "md" },
+                    { minWidth: 600, slideSize: "50%", slideGap: "md" },
                   ]}
                 >
-                  {recommendedProducts.map((product:any) => (
-                    <Carousel.Slide key={product.id}>
+                  {recommendedProducts.map((prod: any) => (
+                    <Carousel.Slide key={prod.id}>
                       <ProductCard
-                        product={product}
+                        product={prod}
                         withHeart={false}
                         sizes="(min-width: 1200px) 560px, (min-width: 600px) 50vw, (min-width: 500px) 65vw, 80vw"
                       />
@@ -133,4 +126,4 @@ const Product = ({
   );
 };
 
-export default Product;
+export default ProductPage;

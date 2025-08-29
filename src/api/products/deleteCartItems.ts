@@ -6,7 +6,7 @@ export const deleteCartItem = async (key: string) => {
     formData.append('key', key);
 
     const response = await customAxiosCS.post(
-      '/api/cart/remove-item',
+      '/cart/remove-item',
       formData,
       {
         headers: {
