@@ -28,7 +28,7 @@ const Cart = () => {
   return (
     <>
       <Head>
-        <title>Cart | LUXE</title>
+        <title>Cart | ISRAELPHARMA</title>
       </Head>
       <MediaQuery
         largerThan={768}

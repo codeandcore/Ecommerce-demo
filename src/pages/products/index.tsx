@@ -38,8 +38,8 @@ const Products = ({
   console.log("products", products);
 
   const resetFilter = () => {
-    setProductsData(products)
-  }
+    setProductsData(products);
+  };
 
   const [productsData, setProductsData] = useState(products);
 
@@ -70,12 +70,11 @@ const Products = ({
                 },
               }}
             >
-
-                <ProductsFilter
-                  productsData={productsData}
-                  setProductsData={setProductsData}
-                  resetFilter={resetFilter}
-                />
+              <ProductsFilter
+                productsData={productsData}
+                setProductsData={setProductsData}
+                resetFilter={resetFilter}
+              />
             </Grid.Col>
             <Grid.Col p={0} span={24} xs={12} sm={15} md={16} lg={17}>
               <ProductsGrid

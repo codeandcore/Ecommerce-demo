@@ -70,7 +70,7 @@ const Header = ({ opened, onToggleNavbar, onClose }: HeaderProps) => {
             className={styles.logo}
             onClick={onClose}
           >
-            LUXE
+            ISRAELPHARMA
           </Anchor>
         </Grid.Col>
         <Grid.Col span="auto" p={0}>

@@ -65,7 +65,7 @@ const Product = ({
     <>
       {product && (
         <Head>
-          <title>{`${product.attributes.title} | LUXE`}</title>
+          <title>{`${product.attributes.title} | ISRAELPHARMA`}</title>
         </Head>
       )}
       <MediaQuery

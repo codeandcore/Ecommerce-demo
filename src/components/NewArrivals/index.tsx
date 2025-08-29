@@ -35,18 +35,6 @@ const NewArrivals = () => {
           >
            Shop New Arrivals
           </Button>
-          {/* <Button
-            variant="default"
-            size="md"
-            radius={0}
-            h={50}
-            component={Link}
-            href="/category/women?filter=new"
-            as="/category/women"
-            className={styles.button}
-          >
-            SHOP WOMEN
-          </Button> */}
         </Group>
       </div>
     </div>

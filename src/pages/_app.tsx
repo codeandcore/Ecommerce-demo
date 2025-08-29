@@ -9,10 +9,10 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <>
       <Head>
-        <title>LUXE</title>
+        <title>ISRAELPHARMA</title>
         <meta
           name="description"
-          content="Get all of your wardrobe essentials from our men's and women's collections here at Luxe."
+          content="Find all your healthcare essentials from our wide range of medicines and wellness products at ISRAELPHARMA."
         />
       </Head>
       <AppProviders>

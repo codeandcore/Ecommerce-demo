@@ -22,7 +22,7 @@ const Wishlist = () => {
   return (
     <>
       <Head>
-        <title>Wishlist | LUXE</title>
+        <title>Wishlist | ISRAELPHARMA</title>
       </Head>
       <MediaQuery
         largerThan={768}
