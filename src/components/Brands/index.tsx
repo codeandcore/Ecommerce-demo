@@ -1,71 +1,118 @@
-import { Card, Container, Group, MediaQuery, rem, Title } from '@mantine/core';
-import Image from 'next/image';
-import React from 'react';
-import countryRoad from '../../../public/images/country-road.png';
-import gant from '../../../public/images/gant.png';
-import levis from '../../../public/images/levis.png';
-import polo from '../../../public/images/polo.png';
-import vans from '../../../public/images/vans.png';
-import styles from './Brands.module.css';
+import { Card, Container, Group, Title, Text } from "@mantine/core";
+import { IconStarFilled, IconCheck } from "@tabler/icons-react";
+import React from "react";
 
-const brands = [
+const testimonials = [
   {
-    src: countryRoad,
-    alt: 'Country Road logo',
+    name: "Helen Winer",
+    time: "4 hours ago",
+    title: "Great experience",
+    review: "Excellent communication. Timely delivery. Great experience overall.",
   },
   {
-    src: gant,
-    alt: 'Gant logo',
+    name: "John Doe",
+    time: "1 day ago",
+    title: "Amazing service",
+    review: "Super fast and reliable. Would highly recommend to anyone.",
   },
   {
-    src: levis,
-    alt: "Levi's logo",
+    name: "Sarah Smith",
+    time: "2 days ago",
+    title: "Loved it!",
+    review: "The entire process was seamless and the team was very helpful.",
   },
   {
-    src: vans,
-    alt: 'Vans logo',
+    name: "Michael Brown",
+    time: "3 days ago",
+    title: "Fantastic",
+    review: "Very professional and quick delivery. Exceeded expectations.",
   },
   {
-    src: polo,
-    alt: 'Polo Ralph Lauren logo',
+    name: "Emily Davis",
+    time: "1 week ago",
+    title: "Top quality",
+    review: "The product quality is top-notch. Great packaging as well.",
+  },
+  {
+    name: "Chris Johnson",
+    time: "2 weeks ago",
+    title: "Highly recommended",
+    review: "Really happy with the service. I’ll definitely come back again.",
   },
 ];
 
-const Brands = () => {
+const styles: Record<string, React.CSSProperties> = {
+  title: {
+    fontSize: "24px",
+    fontWeight: 600,
+    marginBottom: "30px",
+  },
+  card: {
+    width: "30%",
+    minWidth: "280px",
+    marginBottom: "20px",
+    padding: "16px",
+  },
+  stars: {
+    display: "flex",
+    gap: "4px",
+    marginBottom: "10px",
+  },
+  nameRow: {
+    display: "flex",
+    alignItems: "center",
+    gap: "6px",
+  },
+  verified: {
+    display: "flex",
+    alignItems: "center",
+    fontSize: "12px",
+    color: "#00B67A",
+    fontWeight: 500,
+  },
+};
+
+const Testimonials = () => {
   return (
-    <MediaQuery
-      largerThan={768}
-      styles={{ paddingLeft: rem(32), paddingRight: rem(32) }}
-    >
-      <Container size={1200} px={16} mb={80}>
-        <Title
-          order={2}
-          weight={500}
-          mb={10}
-          align="center"
-          className={styles.title}
-        >
-          Our Trusted Partners
-        </Title>
-        <Group position="center" className={styles.container}>
-          {brands.map((brand, index) => (
-            <Card key={index} bg="gray.0">
-              <div className={styles['image-wrapper']}>
-                <Image
-                  src={brand.src}
-                  alt={brand.alt}
-                  fill
-                  placeholder="blur"
-                  style={{ objectFit: 'contain' }}
-                  sizes="150px"
-                />
-              </div>
-            </Card>
-          ))}
-        </Group>
-      </Container>
-    </MediaQuery>
+    <Container size={1200} px={16} mb={80}>
+      <Title order={2} align="center" style={styles.title}>
+        What Our Customers Say
+      </Title>
+
+      <Group position="center" spacing="lg" style={{ flexWrap: "wrap" }}>
+        {testimonials.map((t, index) => (
+          <Card key={index} shadow="sm" radius="md" withBorder style={styles.card}>
+            {/* Stars */}
+            <div style={styles.stars}>
+              {Array.from({ length: 5 }).map((_, i) => (
+                <IconStarFilled key={i} size={18} color="#00B67A" />
+              ))}
+            </div>
+
+            {/* Name + Verified */}
+            <div style={styles.nameRow}>
+              <Text fw={600}>
+                {t.name}, <span style={{ fontWeight: 400 }}>{t.time}</span>
+              </Text>
+              <span style={styles.verified}>
+                <IconCheck size={14} stroke={2.5} /> Verified
+              </span>
+            </div>
+
+            {/* Title */}
+            <Text mt={8} fw={700}>
+              {t.title}
+            </Text>
+
+            {/* Review */}
+            <Text mt={4} size="sm" c="dimmed">
+              {t.review}
+            </Text>
+          </Card>
+        ))}
+      </Group>
+    </Container>
   );
 };
 
-export default Brands;
+export default Testimonials;

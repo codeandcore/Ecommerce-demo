@@ -3,7 +3,7 @@ import { Product, StrapiResponse } from '@/types';
 
 export const getFeaturedProducts = async () => {
   const { data } = await customAxios.get(
-    '/products?type=simple&stock_status=instock'
+    '/products?featured=true&per_page=8'
   );
   return data;
 };

@@ -14,7 +14,7 @@ const Home: React.FC = () => {
     const fetchProducts = async () => {
       try {
         const response = await getFeaturedProducts();
-        setProducts(response ? response.slice(0, 4) : []);
+        setProducts(response ? response: []);
       } catch (err) {
         console.error("Failed to fetch featured products:", err);
       } finally {
