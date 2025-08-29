@@ -1,14 +1,14 @@
-import { Button, Group, Text } from '@mantine/core';
-import Image from 'next/image';
-import Link from 'next/link';
-import React from 'react';
-import hero from '../../../public/images/hero.jpg';
-import styles from './Hero.module.css';
+import { Button, Group, Text } from "@mantine/core";
+import Image from "next/image";
+import Link from "next/link";
+import React from "react";
+import hero from "../../../public/images/hero.jpg";
+import styles from "./Hero.module.css";
 
 const Hero = () => {
   return (
-    <div className={styles['hero-wrapper']}>
-      <div className={styles['image-wrapper']}>
+    <div className={styles["hero-wrapper"]}>
+      <div className={styles["image-wrapper"]}>
         <Image
           priority
           src={hero}
@@ -16,17 +16,17 @@ const Hero = () => {
           fill
           placeholder="blur"
           sizes="100vw"
-          style={{ objectFit: 'cover', objectPosition: '50% 30%' }}
+          style={{ objectFit: "cover", objectPosition: "50% 30%" }}
         />
       </div>
-      <div className={styles['hero-content']}>
+      <div className={styles["hero-content"]}>
         <Text
           color="white"
           weight={600}
           align="center"
           className={`${styles.text} ${styles.primary}`}
         >
-          Better when it&apos;s on you.
+          Care that&apos;s always with you.
         </Text>
         <Text
           color="white"
@@ -35,9 +35,11 @@ const Hero = () => {
           align="center"
           className={`${styles.text} ${styles.secondary}`}
         >
-          Refresh your style with on-trend pieces from our collection.
+          Order medicines and health essentials online, delivered to your
+          doorstep.
         </Text>
-        <Group position="center" className={styles['buttons-container']}>
+
+        <Group position="center" className={styles["buttons-container"]}>
           <Button
             variant="default"
             radius={0}
@@ -45,9 +47,8 @@ const Hero = () => {
             href="/products"
             className={styles.button}
           >
-           Shop Now
+            Shop Now
           </Button>
-        
         </Group>
       </div>
     </div>

@@ -1,4 +1,4 @@
-# Luxe
+# ISRAELPHARMA
 
 #### A responsive e-commerce site built with:
 
@@ -7,7 +7,6 @@
 
 ## Demo
 
-### [Live Demo](https://luxe-store.vercel.app)
 
 ![home](https://user-images.githubusercontent.com/91587325/228783740-1d910d3e-ca84-46eb-898c-79e825308216.png)
 ![mens](https://user-images.githubusercontent.com/91587325/228784921-38a0fd5a-52a4-4274-8dd5-1787c792a871.png)

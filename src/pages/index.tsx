@@ -3,7 +3,7 @@ import { getFeaturedProducts } from '@/api/products/getFeaturedProducts';
 import Brands from '@/components/Brands';
 import FeaturedProducts from '@/components/FeaturedProducts';
 import Hero from '@/components/Hero';
-import NewArrivals from '@/components/NewArrivals';
+// import NewArrivals from '@/components/NewArrivals';
 import Newsletter from '@/components/Newsletter';
 import { getCart } from '@/api/products/getCartApi';
 import React from 'react';
@@ -34,10 +34,8 @@ export default function Home({
   return (
     <>
       <Hero />
-      <NewArrivals />
       <FeaturedProducts products={products} />
       <Brands />
-      {/* <Newsletter /> */}
     </>
   );
 }

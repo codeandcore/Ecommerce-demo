@@ -13,10 +13,10 @@ const FeaturedProducts = ({ products }: FeaturedProductsProps) => {
   return (
     <MediaQuery
       largerThan={768}
-      styles={{ paddingLeft: rem(32), paddingRight: rem(32) }}
+      styles={{ paddingLeft: rem(32), paddingRight: rem(32), paddingTop: "30px" }}
     >
       <Container size={1200} px={16} mb={80}>
-        <Title order={2} size={20} weight={600} mb={10}>
+        <Title order={2} size={25} weight={600} mb={10}>
           Featured Products
         </Title>
         <SimpleGrid
