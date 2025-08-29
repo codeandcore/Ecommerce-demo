@@ -48,13 +48,13 @@ const Layout = ({ children }: LayoutProps) => {
           </Transition>
         }
       >
-        <Box bg="gray.2" h={45} p={16} className={styles.sticky}>
+        {/* <Box bg="gray.2" h={45} p={16} className={styles.sticky}>
           <div className={styles['features-wrapper']}>
             <p className={styles.feature}>FREE SHIPPING</p>
             <p className={styles.feature}>FAST DELIVERY</p>
             <p className={styles.feature}>FREE RETURNS</p>
           </div>
-        </Box>
+        </Box> */}
         {children}
       </AppShell>
       <Footer />

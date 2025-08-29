@@ -41,14 +41,6 @@ export const getStaticProps: GetStaticProps<Props, Params> = async ({
 }) => {
   if (params?.productId) {
     const response = await getProductById(params.productId);
-
-    // const recommendedProducts = await Promise.all(
-    //   response.data.attributes.recommended.map(async (id) => {
-    //     const resp = await getProductById(id);
-    //     return resp.data;
-    //   })
-    // );
-
     return {
       props: {
         product: response,

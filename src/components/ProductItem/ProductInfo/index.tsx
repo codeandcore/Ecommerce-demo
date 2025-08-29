@@ -1,13 +1,13 @@
-import { useCartStore } from '@/stores/cart';
-import { useWishlist, useWishlistStore } from '@/stores/wishlist';
-import { Product } from '@/types';
-import { ActionIcon, Group, Select, Text, Title } from '@mantine/core';
-import React, { useEffect, useState } from 'react';
-import { FiHeart } from 'react-icons/fi';
-import { ChevronDown } from 'tabler-icons-react';
-import styles from './ProductInfo.module.css';
-import AddToCartBtn from '@/components/AddToCartBtn';
-import { AddToCartProduct } from '@/api/products/AddToCartApi';
+import { useCartStore } from "@/stores/cart";
+import { useWishlist, useWishlistStore } from "@/stores/wishlist";
+import { Product } from "@/types";
+import { ActionIcon, Group, Select, Text, Title } from "@mantine/core";
+import React, { useEffect, useState } from "react";
+import { FiHeart } from "react-icons/fi";
+import { ChevronDown } from "tabler-icons-react";
+import styles from "./ProductInfo.module.css";
+import AddToCartBtn from "@/components/AddToCartBtn";
+import { AddToCartProduct } from "@/api/products/AddToCartApi";
 
 type ProductInfoProps = {
   product: Product;
@@ -22,12 +22,10 @@ const ProductInfo = ({ product }: any) => {
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(false);
 
-  // Sync hearted state with wishlist
   useEffect(() => {
     setHearted(wishlist.some((item) => item.id === product.id));
   }, [wishlist, product.id]);
 
-  // Reset "Added to Cart" state after 1.5s
   useEffect(() => {
     if (addedToCart) {
       const timer = setTimeout(() => setAddedToCart(false), 1500);
@@ -35,10 +33,11 @@ const ProductInfo = ({ product }: any) => {
     }
   }, [addedToCart]);
 
-  const handleAddToCart = async() => {
-    // If variable product, ensure all attributes are selected
-    if (product?.type === 'variable') {
-      const allSelected = product?.attributes?.every((attr:any) => selectedAttributes[attr.slug]);
+  const handleAddToCart = async () => {
+    if (product?.type === "variable") {
+      const allSelected = product?.attributes?.every(
+        (attr: any) => selectedAttributes[attr.slug]
+      );
       if (!allSelected) {
         setError(true);
         return;
@@ -46,7 +45,7 @@ const ProductInfo = ({ product }: any) => {
     }
 
     addToCart(product, selectedAttributes);
-    const data = await AddToCartProduct(product?.id)
+    const data = await AddToCartProduct(product?.id);
     setAddedToCart(true);
   };
 
@@ -63,22 +62,12 @@ const ProductInfo = ({ product }: any) => {
 
       {product.brand?.name && <Text mb={20}>{product.brand.name}</Text>}
 
-      {/* {product?.stock_status === 'instock' ? (
-        <Text weight={500} mb={20}>
-          ${product.prices?.price ?? 0}.00
-        </Text>
-      ) : (
-        <Text weight={500} mb={20} color="red">
-          Out of Stock
-        </Text>
-      )} */}
-        <Text weight={500} mb={20}>
-          ${product.prices?.price ?? 0}.00
-        </Text>
-      {/* Render variations only if product is variable */}
-      {product?.type === 'variable' &&
+      <Text weight={500} mb={20}>
+        ${product.prices?.price ?? 0}.00
+      </Text>
+      {product?.type === "variable" &&
         product?.attributes?.map((attr: any) => {
-          const selectedValue = selectedAttributes[attr.slug] || '';
+          const selectedValue = selectedAttributes[attr.slug] || "";
           return (
             <Select
               key={attr?.id}
@@ -88,13 +77,13 @@ const ProductInfo = ({ product }: any) => {
               mb={20}
               radius={2}
               rightSection={<ChevronDown size={20} color="#22B8CF" />}
-              styles={{ rightSection: { pointerEvents: 'none' } }}
+              styles={{ rightSection: { pointerEvents: "none" } }}
               aria-label={`Pick a ${attr?.name}`}
               value={selectedValue}
               onChange={(value) =>
-                setSelectedAttributes((prev) => ({
+                setSelectedAttributes((prev: any) => ({
                   ...prev,
-                  [attr.slug]: value || '',
+                  [attr.slug]: value || "",
                 }))
               }
               error={error && !selectedValue}
@@ -108,7 +97,6 @@ const ProductInfo = ({ product }: any) => {
           size="md"
           addedToCart={addedToCart}
           handleAddToCart={handleAddToCart}
-          // disabled={product?.stock_status !== 'instock'}
         />
         <ActionIcon
           variant="outline"
@@ -116,27 +104,48 @@ const ProductInfo = ({ product }: any) => {
           color="cyan"
           radius={2}
           onClick={handleClickWishlist}
-          className={styles['heart-button']}
-          aria-label={hearted ? 'Remove from wishlist' : 'Add to wishlist'}
+          className={styles["heart-button"]}
+          aria-label={hearted ? "Remove from wishlist" : "Add to wishlist"}
         >
-          <FiHeart className={`${styles.heart} ${hearted ? styles.active : ''}`} />
+          <FiHeart
+            className={`${styles.heart} ${hearted ? styles.active : ""}`}
+          />
         </ActionIcon>
       </Group>
-
-      <Text weight={600} size={15}>Material</Text>
-      <Text size={14} color="dark.3" mb={20}>100% Cotton</Text>
-
-      <Text weight={600} size={15}>Care</Text>
-      <Text size={14} color="dark.3" mb={20}>Refer to product for care instructions.</Text>
-
-      <Text weight={600} size={15}>Delivery</Text>
+      <Text weight={600} size={15}>
+        Type
+      </Text>
+      <Text
+        size={14}
+        color="dark.3"
+        mb={20}
+        style={{ textTransform: "capitalize" }}
+      >
+        {product.type}
+      </Text>
+      <Text weight={600} size={15}>
+        Categories
+      </Text>
       <Text size={14} color="dark.3" mb={20}>
-        This item is sent directly from our partner and will arrive separately
-        if ordered with other items.
+        {product?.categories?.map((c: any) => c.name)?.join(", ")}{" "}
       </Text>
 
-      <Text weight={600} size={15}>Returns</Text>
-      <Text size={14} color="dark.3">Free returns within 30 days.</Text>
+      <Text weight={600} size={15}>
+        Description
+      </Text>
+      <Text
+        size={14}
+        color="dark.3"
+        mb={20}
+        dangerouslySetInnerHTML={{ __html: product?.short_description }}
+      />
+
+      <Text weight={600} size={15}>
+        Tags
+      </Text>
+      <Text size={14} color="dark.3">
+       {product?.tags?.map((c: any) => c.name)?.join(", ")}{" "}
+      </Text>
     </>
   );
 };
