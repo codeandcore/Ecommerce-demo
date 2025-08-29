@@ -72,7 +72,7 @@ const CartItem = ({ item }: any) => {
                   href={`/product/${item.id}`}
                   color="dark"
                 >
-                  <Text weight={600}>{item.attributes.title}</Text>
+                  <Text weight={600}>{item?.attributes?.title}</Text>
                 </Anchor>
                 <ActionIcon onClick={handleRemoveFromCart}>
                   <X color="#000" />

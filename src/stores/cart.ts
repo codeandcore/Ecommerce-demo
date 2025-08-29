@@ -1,9 +1,9 @@
-import { getCart } from '@/api/products/getCartApi';
-import { customAxios } from '@/lib/axios';
-import { Product } from '@/types';
-import { useEffect, useState } from 'react';
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { getCart } from "@/api/products/getCartApi";
+import { customAxios } from "@/lib/axios";
+import { Product } from "@/types";
+import { useEffect, useState } from "react";
+import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 export type CartItem = Product & {
   quantity: number;
@@ -26,18 +26,18 @@ export const useCartStore = create<Cart>()(
       fetchCart: async () => {
         try {
           const { data } = await getCart();
-          console.log("data",data);
-          
+          console.log("data", data);
+
           // Adjust API endpoint
           set({ cart: data?.items || [] }); // Assuming API returns { items: CartItem[] }
         } catch (error) {
-          console.error('Failed to fetch cart:', error);
+          console.error("Failed to fetch cart:", error);
         }
       },
       addToCart: (newItem, size) =>
         set((state) => {
-          console.log("state",state);
-          
+          console.log("state", state);
+
           const cartIndex = state.cart.findIndex(
             (item) => item.id === newItem.id && item.size === size
           );
@@ -127,7 +127,7 @@ export const useCartStore = create<Cart>()(
           };
         }),
     }),
-    { name: 'luxe-cart' }
+    { name: "luxe-cart" }
   )
 );
 
@@ -168,7 +168,10 @@ export const useTotalPrice = () => {
 
   useEffect(() => {
     setTotalPrice(
-      cart.reduce((prev, cur) => prev + cur.quantity * cur.attributes.price, 0)
+      cart?.reduce(
+        (prev, cur) => prev + cur?.quantity * cur?.attributes?.price,
+        0
+      )
     );
     setIsHydrated(true);
   }, [cart]);
@@ -177,7 +180,7 @@ export const useTotalPrice = () => {
 };
 
 export const useCartInitializer = () => {
-  const fetchCart = useCartStore((state) => state.fetchCart);
+  const fetchCart = useCartStore((state: any) => state.fetchCart);
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
