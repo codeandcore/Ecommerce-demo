@@ -2,15 +2,23 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['res.cloudinary.com','lightslategrey-mink-262348.hostingersite.com'],
+    domains: [
+      "res.cloudinary.com",
+      "lightslategrey-mink-262348.hostingersite.com",
+    ],
   },
-    async rewrites() {
+  async rewrites() {
     return {
       fallback: [
         {
           source: "/api/cart",
           destination:
             "https://lightslategrey-mink-262348.hostingersite.com/wp-json/wc/store/v1/cart",
+        },
+        {
+          source: "/api/cart/add-item",
+          destination:
+            "https://lightslategrey-mink-262348.hostingersite.com/wp-json/wc/store/v1/cart/add-item",
         },
         {
           source: "/:path*",
