@@ -46,8 +46,8 @@ const ProductInfo = ({ product }: any) => {
 
     addToCart(product, selectedAttributes);
 
-    const data = await AddToCartProduct(product?.id)
     setAddedToCart(true);
+    const data = await AddToCartProduct(product?.id)
   };
 
   const handleClickWishlist = () => {

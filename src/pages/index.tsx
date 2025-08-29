@@ -10,29 +10,18 @@ import React from 'react';
 
 export const getStaticProps = async () => {
   const response = await getFeaturedProducts();
-  const cartdata = await getCart()
-  console.log("cartdata",cartdata);
-  
-  const nonce = cartdata?.headers['nonce'];
+
   return {
     props: {
       products: response ? response.slice(0, 4) : [],
-      nonce
     },
   };
 };
 
 export default function Home({
   products,
-  nonce
 }: InferGetStaticPropsType<typeof getStaticProps>) {
-  React.useEffect(() => {
-    if (nonce) {
-      localStorage.setItem('api_nonce', nonce);
-    }
-  }, [nonce]);
 
-  
   return (
     <>
       <Hero />

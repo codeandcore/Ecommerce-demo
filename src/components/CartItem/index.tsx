@@ -14,51 +14,70 @@ import Link from 'next/link';
 import React, { useRef, useState } from 'react';
 import { Minus, Plus, X } from 'tabler-icons-react';
 import styles from './CartItem.module.css';
+import { updateCartItem } from '@/api/products/updateCartApi';
+import { deleteCartItem } from '@/api/products/deleteCartItems';
 
 type CartItemProps = {
-  item:any ;
+  item: any;
 };
 
-const CartItem = ({ item }: any) => {
-  const [quantity, setQuantity] = useState<number | ''>(item.stock_quantity || 1 );
+const CartItem = ({ item }: CartItemProps) => {
+  const [quantity, setQuantity] = useState<number>(item.quantity || 1);
+  const [loading, setLoading] = useState(false);
   const handlers = useRef<NumberInputHandlers>();
-
   const increment = useCartStore((state) => state.increment);
   const decrement = useCartStore((state) => state.decrement);
   const removeFromCart = useCartStore((state) => state.removeFromCart);
 
+  const handleUpdateQuantity = async (newQuantity: number) => {
+    setLoading(true);
+    try {
+      await updateCartItem(item.key, newQuantity); // <-- API call
+      setQuantity(newQuantity);
+    } catch (error) {
+      console.error('Failed to update cart item:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleIncrement = () => {
-    handlers.current?.increment();
-    increment(item.id, item.size);
+    const newQuantity = quantity + 1;
+        increment(item.id, item.size);
+    handleUpdateQuantity(newQuantity);
   };
 
   const handleDecrement = () => {
-    handlers.current?.decrement();
-    decrement(item.id, item.size);
+    if (quantity > 1) {
+      const newQuantity = quantity - 1;
+        decrement(item.id, item.size);
+      handleUpdateQuantity(newQuantity);
+    }
   };
 
-  const handleRemoveFromCart = () => {
+
+const handleRemoveFromCart = async () => {
+  try {
     removeFromCart(item.id, item.size);
-  };
+    await deleteCartItem(item.key);
+    // Optionally update your cart store or state after deletion
+  } catch (error) {
+    console.error('Failed to remove item:', error);
+  }
+};
 
   return (
     <>
       <div className={styles.grid}>
         <div>
-          <Anchor
-            component={Link}
-            href={`/product/${item.id}`}
-            sx={{ display: 'block' }}
-          >
+          <Anchor component={Link} href={`/product/${item.id}`} sx={{ display: 'block' }}>
             <div className={styles['image-wrapper']}>
               <Image
                 src={item.images?.[0]?.src}
-                alt={item.images?.[0]?.alt}
+                alt={item.images?.[0]?.alt || 'Product image'}
                 fill
                 style={{ objectFit: 'cover', objectPosition: '50% 10%' }}
                 sizes="(min-width: 992px) 250px, (min-width: 768px) 50vw, (min-width: 500px) 235px, 100vw"
-                // placeholder="blur"
-                // blurDataURL={item.attributes.image1.data.attributes.placeholder}
               />
             </div>
           </Anchor>
@@ -67,18 +86,13 @@ const CartItem = ({ item }: any) => {
           <Stack justify="space-between" h="100%">
             <div>
               <Group position="apart" align="flex-start" w="100%" noWrap>
-                <Anchor
-                  component={Link}
-                  href={`/product/${item.id}`}
-                  color="dark"
-                >
+                <Anchor component={Link} href={`/product/${item.id}`} color="dark">
                   <Text weight={600}>{item?.attributes?.title}</Text>
                 </Anchor>
                 <ActionIcon onClick={handleRemoveFromCart}>
                   <X color="#000" />
                 </ActionIcon>
               </Group>
-              {/* <Text>Size: {item.size}</Text> */}
             </div>
             <div>
               <Text weight={600} mb={10}>
@@ -90,15 +104,16 @@ const CartItem = ({ item }: any) => {
                     size={38}
                     variant="default"
                     onClick={handleDecrement}
+                    disabled={loading || quantity <= 1}
                   >
                     <Minus size={16} />
                   </ActionIcon>
                   <NumberInput
                     hideControls
                     value={quantity}
-                    onChange={(val) => setQuantity(val)}
                     handlersRef={handlers}
-                    min={0}
+                    readOnly
+                    min={1}
                     step={1}
                     h={38}
                     styles={{
@@ -110,12 +125,12 @@ const CartItem = ({ item }: any) => {
                       wrapper: { height: '100%' },
                     }}
                     aria-label="Quantity"
-                    readOnly
                   />
                   <ActionIcon
                     size={38}
                     variant="default"
                     onClick={handleIncrement}
+                    disabled={loading}
                   >
                     <Plus size={16} />
                   </ActionIcon>

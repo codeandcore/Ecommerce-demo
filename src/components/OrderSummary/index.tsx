@@ -56,10 +56,10 @@ const OrderSummary = () => {
       <Text weight={600} size={18} mb={20}>
         Order Summary
       </Text>
-      <Group position="apart" mb={6} noWrap>
+      {/* <Group position="apart" mb={6} noWrap>
         <Text weight={500}>Subtotal</Text>
         <Text>${totalPrice}.00</Text>
-      </Group>
+      </Group> */}
       <Group position="apart" noWrap>
         <Text weight={500}>Shipping</Text>
         <Text size={14}>FREE</Text>

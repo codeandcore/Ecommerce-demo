@@ -4,6 +4,7 @@ import HeaderContent from './Header';
 import NavbarContent from './Navbar';
 import Footer from './Footer';
 import styles from './Layout.module.css';
+import { useCartInitializer } from '@/stores/cart';
 
 type LayoutProps = {
   children: React.ReactNode;
@@ -18,7 +19,7 @@ const slideRight = {
 
 const Layout = ({ children }: LayoutProps) => {
   const [opened, setOpened] = useState(false);
-
+  useCartInitializer();
   return (
     <>
       <AppShell

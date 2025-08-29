@@ -40,8 +40,8 @@ const WishlistItem = ({ item }: any) => {
     }
 
     addToCart(item, selectedAttributes);
-        const data = await AddToCartProduct(item?.id,nonce)
     setAddedToCart(true);
+        const data = await AddToCartProduct(item?.id)
   };
 
   return (

@@ -11,7 +11,7 @@ export type CartItem = Product & {
 };
 
 type Cart = {
-  cart: CartItem[];
+  cart: any;
   addToCart: (newItem: Product, size: string) => void;
   increment: (id: number, size: string) => void;
   decrement: (id: number, size: string) => void;
@@ -25,9 +25,12 @@ export const useCartStore = create<Cart>()(
       cart: [],
       fetchCart: async () => {
         try {
-          const { data } = await getCart();
-          console.log("data", data);
-
+            const response = await getCart(); // This should return full Axios response
+          const { data, headers } = response;
+          const nonce = headers['nonce'];
+          if (nonce) {
+            localStorage.setItem('api_nonce', nonce);
+          }
           // Adjust API endpoint
           set({ cart: data?.items || [] }); // Assuming API returns { items: CartItem[] }
         } catch (error) {
@@ -62,7 +65,7 @@ export const useCartStore = create<Cart>()(
 
       increment: (id, size) =>
         set((state) => {
-          const newCart = state.cart.map((item) => {
+          const newCart = state.cart.map((item:any) => {
             if (item.id === id && item.size === size) {
               return { ...item, quantity: item.quantity + 1 };
             }
@@ -81,7 +84,7 @@ export const useCartStore = create<Cart>()(
           );
 
           if (cartItem?.quantity && cartItem?.quantity > 1) {
-            const newCart = state.cart.map((item) => {
+            const newCart = state.cart.map((item:any) => {
               if (item.id === id && item.size === size) {
                 return {
                   ...item,
@@ -169,7 +172,7 @@ export const useTotalPrice = () => {
   useEffect(() => {
     setTotalPrice(
       cart?.reduce(
-        (prev, cur) => prev + cur?.quantity * cur?.attributes?.price,
+        (prev, cur) => prev + cur?.quantity * cur?.prices?.price,
         0
       )
     );

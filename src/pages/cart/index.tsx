@@ -18,7 +18,7 @@ import OrderSummary from '@/components/OrderSummary';
 import { useCart, useCartInitializer } from '@/stores/cart';
 
 const Cart = () => {
-  useCartInitializer();
+
   const { cart, isHydrated } = useCart();
 
   if (!isHydrated) {

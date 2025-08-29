@@ -18,7 +18,6 @@ export const customAxiosCS = axios.create({
 customAxiosCS.interceptors.request.use((config) => {
   if (typeof window !== "undefined") {
     const nonce = localStorage.getItem("api_nonce");
-    console.log('nonce', nonce);
     
     if (nonce) {
       config.headers["Nonce"] = nonce;
