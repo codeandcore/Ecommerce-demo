@@ -7,6 +7,7 @@ import { FiHeart } from 'react-icons/fi';
 import { ChevronDown } from 'tabler-icons-react';
 import styles from './ProductInfo.module.css';
 import AddToCartBtn from '@/components/AddToCartBtn';
+import { AddToCartProduct } from '@/api/products/AddToCartApi';
 
 type ProductInfoProps = {
   product: Product;
@@ -34,7 +35,7 @@ const ProductInfo = ({ product }: any) => {
     }
   }, [addedToCart]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async() => {
     // If variable product, ensure all attributes are selected
     if (product?.type === 'variable') {
       const allSelected = product?.attributes?.every((attr:any) => selectedAttributes[attr.slug]);
@@ -45,6 +46,7 @@ const ProductInfo = ({ product }: any) => {
     }
 
     addToCart(product, selectedAttributes);
+    const data = await AddToCartProduct(product?.id)
     setAddedToCart(true);
   };
 
@@ -61,16 +63,18 @@ const ProductInfo = ({ product }: any) => {
 
       {product.brand?.name && <Text mb={20}>{product.brand.name}</Text>}
 
-      {product?.stock_status === 'instock' ? (
+      {/* {product?.stock_status === 'instock' ? (
         <Text weight={500} mb={20}>
-          ${product.price ?? 0}.00
+          ${product.prices?.price ?? 0}.00
         </Text>
       ) : (
         <Text weight={500} mb={20} color="red">
           Out of Stock
         </Text>
-      )}
-
+      )} */}
+        <Text weight={500} mb={20}>
+          ${product.prices?.price ?? 0}.00
+        </Text>
       {/* Render variations only if product is variable */}
       {product?.type === 'variable' &&
         product?.attributes?.map((attr: any) => {
@@ -104,7 +108,7 @@ const ProductInfo = ({ product }: any) => {
           size="md"
           addedToCart={addedToCart}
           handleAddToCart={handleAddToCart}
-          disabled={product?.stock_status !== 'instock'}
+          // disabled={product?.stock_status !== 'instock'}
         />
         <ActionIcon
           variant="outline"

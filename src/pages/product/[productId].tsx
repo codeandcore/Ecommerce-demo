@@ -17,6 +17,9 @@ type Props = {
   product: any
   recommendedProducts: any
 };
+console.log(
+  
+);
 
 export const getStaticPaths: GetStaticPaths<Params> = async () => {
   const response = await getAllProducts();

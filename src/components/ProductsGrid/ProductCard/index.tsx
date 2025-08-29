@@ -77,7 +77,7 @@ const ProductCard = ({
           {product.name}
         </Text>
         <Text size={14} weight={600} my={3}>
-          ${product.price}.00
+          ${product.prices?.price}.00
         </Text>
       </Anchor>
     </>

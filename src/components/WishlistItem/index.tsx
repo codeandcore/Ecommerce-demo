@@ -8,6 +8,7 @@ import React, { useEffect, useState } from 'react';
 import { ChevronDown, Trash } from 'tabler-icons-react';
 import AddToCartBtn from '../AddToCartBtn';
 import styles from './WishlistItem.module.css';
+import { AddToCartProduct } from '@/api/products/AddToCartApi';
 
 type WishlistItemProps = {
   item: Product;
@@ -29,7 +30,7 @@ const WishlistItem = ({ item }: any) => {
     }
   }, [addedToCart]);
 
-  const handleAddToCart = () => {
+  const handleAddToCart = async() => {
     if (item?.type === 'variable') {
       const allSelected = item?.attributes?.every((attr:any) => selectedAttributes[attr.slug]);
       if (!allSelected) {
@@ -39,6 +40,7 @@ const WishlistItem = ({ item }: any) => {
     }
 
     addToCart(item, selectedAttributes);
+        const data = await AddToCartProduct(item?.id)
     setAddedToCart(true);
   };
 
@@ -59,12 +61,12 @@ const WishlistItem = ({ item }: any) => {
       <Anchor component={Link} href={`/product/${item.id}`} color="dark" className={styles.link}>
         <Text weight={500} mt={15}>{item.attributes?.title || item.name}</Text>
         <Text my={5}>{item.name}</Text>
-
-        {item?.stock_status === 'instock' ? (
+<Text weight={500} mb={20}>${item.prices?.price ?? 0}.00</Text>
+        {/* {item?.stock_status === 'instock' ? (
           <Text weight={500} mb={20}>${item.price ?? 0}.00</Text>
         ) : (
           <Text weight={500} mb={20} color="red">Out of Stock</Text>
-        )}
+        )} */}
       </Anchor>
 
       {/* Render variations only if product type is variable */}
@@ -98,7 +100,7 @@ const WishlistItem = ({ item }: any) => {
         size="sm"
         addedToCart={addedToCart}
         handleAddToCart={handleAddToCart}
-        disabled={item?.stock_status !== 'instock'}
+        // disabled={item?.stock_status !== 'instock'}
       />
 
       <Button

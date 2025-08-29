@@ -1,4 +1,4 @@
-import { CartItem, useCartStore } from '@/stores/cart';
+import { useCartStore } from '@/stores/cart';
 import {
   ActionIcon,
   Anchor,
@@ -16,7 +16,7 @@ import { Minus, Plus, X } from 'tabler-icons-react';
 import styles from './CartItem.module.css';
 
 type CartItemProps = {
-  item: CartItem;
+  item:any ;
 };
 
 const CartItem = ({ item }: any) => {
@@ -82,7 +82,7 @@ const CartItem = ({ item }: any) => {
             </div>
             <div>
               <Text weight={600} mb={10}>
-                ${item.price}.00
+                ${item?.prices?.price}.00
               </Text>
               <Group position="apart" noWrap>
                 <Group spacing={5} noWrap>
@@ -121,7 +121,7 @@ const CartItem = ({ item }: any) => {
                   </ActionIcon>
                 </Group>
                 <Text weight={600} align="right">
-                  TOTAL: ${Number(quantity) * item.price}.00
+                  TOTAL: ${Number(quantity) * item.prices?.price}.00
                 </Text>
               </Group>
             </div>
