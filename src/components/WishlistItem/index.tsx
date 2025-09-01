@@ -41,7 +41,8 @@ const WishlistItem = ({ item }: any) => {
 
     addToCart(item, selectedAttributes);
     setAddedToCart(true);
-        const data = await AddToCartProduct(item?.id)
+    const data = await AddToCartProduct(item?.id)
+    useCartStore.getState().setCartItems(data?.items);
   };
 
   return (

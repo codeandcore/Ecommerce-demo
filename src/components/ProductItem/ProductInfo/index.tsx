@@ -8,7 +8,6 @@ import { ChevronDown } from "tabler-icons-react";
 import styles from "./ProductInfo.module.css";
 import AddToCartBtn from "@/components/AddToCartBtn";
 import { AddToCartProduct } from "@/api/products/AddToCartApi";
-
 type ProductInfoProps = {
   product: Product;
 };
@@ -21,6 +20,7 @@ const ProductInfo = ({ product }: any) => {
   const [hearted, setHearted] = useState(false);
   const [addedToCart, setAddedToCart] = useState(false);
   const [error, setError] = useState(false);
+  
   // Sync hearted state with wishlist
   useEffect(() => {
     setHearted(wishlist.some((item) => item.id === product.id));
@@ -43,11 +43,15 @@ const ProductInfo = ({ product }: any) => {
         return;
       }
     }
+console.log("produce",product);
 
     addToCart(product, selectedAttributes);
 
     setAddedToCart(true);
     const data = await AddToCartProduct(product?.id)
+    useCartStore.getState().setCartItems(data?.items);
+    console.log("data",data);
+    
   };
 
   const handleClickWishlist = () => {

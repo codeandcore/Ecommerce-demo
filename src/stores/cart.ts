@@ -1,5 +1,4 @@
 import { getCart } from "@/api/products/getCartApi";
-import { customAxios } from "@/lib/axios";
 import { Product } from "@/types";
 import { useEffect, useState } from "react";
 import { create } from "zustand";
@@ -11,7 +10,9 @@ export type CartItem = Product & {
 };
 
 type Cart = {
-  cart: any;
+  cart: CartItem[];
+  fetchCart: () => Promise<void>;
+  setCartItems: (items: CartItem[]) => void;
   addToCart: (newItem: Product, size: string) => void;
   increment: (id: number, size: string) => void;
   decrement: (id: number, size: string) => void;
@@ -23,26 +24,72 @@ export const useCartStore = create<Cart>()(
   persist(
     (set) => ({
       cart: [],
+
+      // Fetch cart from API
       fetchCart: async () => {
         try {
-          const response = await getCart(); // This should return full Axios response
+          const response = await getCart();
           const { data, headers } = response;
           const nonce = headers["nonce"];
           if (nonce) {
             localStorage.setItem("api_nonce", nonce);
           }
-          // Adjust API endpoint
-          set({ cart: data?.items || [] }); // Assuming API returns { items: CartItem[] }
+      const updateItems=[] as any
+      data?.items.forEach((newItem:any) => {
+        const cartIndex = data?.items.findIndex(
+          (item:any) => item.id === newItem.id
+        );
+
+        if (cartIndex < 0) {
+          updateItems.push({
+            ...newItem,
+            quantity: newItem.quantity ?? 1,
+          });
+        } else {
+          updateItems[cartIndex] = {
+            ...updateItems[cartIndex],
+            quantity: updateItems[cartIndex].quantity + (newItem.quantity ?? 1),
+          };
+        }
+      });
+          set({ cart: updateItems || [] });
         } catch (error) {
           console.error("Failed to fetch cart:", error);
         }
       },
+
+
+    setCartItems: (items, size = "") =>
+    set((state) => {
+    
+      const updateItems=[] as any
+      items.forEach((newItem) => {
+        const cartIndex = items.findIndex(
+          (item) => item.id === newItem.id && item.size === (newItem.size || size)
+        );
+
+        if (cartIndex < 0) {
+          updateItems.push({
+            ...newItem,
+            quantity: newItem.quantity ?? 1,
+            size: newItem.size || size,
+          });
+        } else {
+          updateItems[cartIndex] = {
+            ...updateItems[cartIndex],
+            quantity: updateItems[cartIndex].quantity + (newItem.quantity ?? 1),
+          };
+        }
+      });
+
+      return { cart: updateItems };
+    }),
+
+      // Add new item or increment if it exists
       addToCart: (newItem, size) =>
         set((state) => {
-          console.log("state", state);
-
           const cartIndex = state.cart.findIndex(
-            (item: any) => item.id === newItem.id && item.size === size
+            (item) => item.id === newItem.id && item.size === size
           );
 
           if (cartIndex < 0) {
@@ -51,84 +98,57 @@ export const useCartStore = create<Cart>()(
             };
           }
 
-          const newCart = state.cart.map((item: any, index: any) => {
-            if (index === cartIndex) {
-              return { ...item, quantity: item.quantity + 1 };
-            }
-            return item;
-          });
+          const newCart = state.cart.map((item, index) =>
+            index === cartIndex ? { ...item, quantity: item.quantity + 1 } : item
+          );
 
-          return {
-            cart: newCart,
-          };
+          return { cart: newCart };
         }),
 
+      // Increment item quantity
       increment: (id, size) =>
-        set((state) => {
-          const newCart = state.cart.map((item: any) => {
-            if (item.id === id && item.size === size) {
-              return { ...item, quantity: item.quantity + 1 };
-            }
-            return item;
-          });
+        set((state) => ({
+          cart: state.cart.map((item) =>
+            item.id === id && item.size === size
+              ? { ...item, quantity: item.quantity + 1 }
+              : item
+          ),
+        })),
 
-          return {
-            cart: newCart,
-          };
-        }),
-
+      // Decrement or remove if quantity goes below 1
       decrement: (id, size) =>
         set((state) => {
           const cartItem = state.cart.find(
-            (item: any) => item.id === id && item.size === size
+            (item) => item.id === id && item.size === size
           );
 
           if (cartItem?.quantity && cartItem?.quantity > 1) {
-            const newCart = state.cart.map((item: any) => {
-              if (item.id === id && item.size === size) {
-                return {
-                  ...item,
-                  quantity: item.quantity - 1,
-                };
-              }
-
-              return item;
-            });
-
             return {
-              cart: newCart,
+              cart: state.cart.map((item) =>
+                item.id === id && item.size === size
+                  ? { ...item, quantity: item.quantity - 1 }
+                  : item
+              ),
             };
           }
 
-          const filteredCart = state.cart.filter((item: any) => {
-            if (item.id === id && item.size === size) {
-              return false;
-            }
-            return true;
-          });
           return {
-            cart: filteredCart,
+            cart: state.cart.filter(
+              (item) => !(item.id === id && item.size === size)
+            ),
           };
         }),
 
+      // Remove item from cart
       removeFromCart: (id, size) =>
-        set((state) => {
-          return {
-            cart: state.cart.filter((item: any) => {
-              if (item.id === id && item.size === size) {
-                return false;
-              }
-              return true;
-            }),
-          };
-        }),
+        set((state) => ({
+          cart: state.cart.filter(
+            (item) => !(item.id === id && item.size === size)
+          ),
+        })),
 
-      resetCart: () =>
-        set(() => {
-          return {
-            cart: [],
-          };
-        }),
+      // Clear entire cart
+      resetCart: () => set({ cart: [] }),
     }),
     { name: "luxe-cart" }
   )
@@ -136,7 +156,6 @@ export const useCartStore = create<Cart>()(
 
 /*
 Workaround to integrate zustand persist with NextJS SSR
-https://github.com/pmndrs/zustand/issues/1145
 */
 export const useCart = () => {
   const initialCart = useCartStore((state) => state.cart);
@@ -158,7 +177,7 @@ export const useTotalQuantity = () => {
 
   useEffect(() => {
     setTotalQuantity(
-      cart.reduce((prev: any, cur: any) => prev + cur.quantity, 0)
+      cart.reduce((prev, cur) => prev + cur.quantity, 0)
     );
     setIsHydrated(true);
   }, [cart]);
@@ -173,8 +192,8 @@ export const useTotalPrice = () => {
 
   useEffect(() => {
     setTotalPrice(
-      cart?.reduce(
-        (prev: any, cur: any) => prev + cur?.quantity * cur?.prices?.price,
+      cart.reduce(
+        (prev, cur) => prev + cur.quantity * (cur?.prices?.price ?? 0),
         0
       )
     );
@@ -185,7 +204,7 @@ export const useTotalPrice = () => {
 };
 
 export const useCartInitializer = () => {
-  const fetchCart = useCartStore((state: any) => state.fetchCart);
+  const fetchCart = useCartStore((state) => state.fetchCart);
   useEffect(() => {
     fetchCart();
   }, [fetchCart]);
