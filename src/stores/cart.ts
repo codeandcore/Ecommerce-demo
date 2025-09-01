@@ -186,14 +186,14 @@ export const useTotalQuantity = () => {
 };
 
 export const useTotalPrice = () => {
-  const cart = useCartStore((state) => state.cart);
+  const cart = useCartStore((state:any) => state.cart);
   const [totalPrice, setTotalPrice] = useState(0);
   const [isHydrated, setIsHydrated] = useState(false);
 
   useEffect(() => {
     setTotalPrice(
       cart.reduce(
-        (prev, cur) => prev + cur.quantity * (cur?.prices?.price ?? 0),
+        (prev:any, cur:any) => prev + cur.quantity * (cur?.prices?.price ?? 0),
         0
       )
     );
