@@ -5,6 +5,7 @@ const nextConfig = {
     domains: [
       "res.cloudinary.com",
       "lightslategrey-mink-262348.hostingersite.com",
+      "ip.codeandcore.com",
     ],
   },
   async rewrites() {
